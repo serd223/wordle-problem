@@ -19,6 +19,13 @@ pub fn read_words_to(path: &str, buf: &mut String) -> Result<(), ()>{
         }
     }
 
+    if let Some('\n') = buf.chars().next_back() {
+        buf.pop();
+    }
+    if let Some('\r') = buf.chars().next_back() {
+        buf.pop();
+    }
+
     Ok(())
 }
 
