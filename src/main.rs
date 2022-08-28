@@ -2,6 +2,9 @@
 use rayon::prelude::*;
 use std::time::Instant;
 
+mod word;
+use word::*;
+
 pub fn read_words_to(path: &str, buf: &mut String) -> Result<(), ()>{
     use std::path::Path;
     use std::io::Read;
@@ -32,9 +35,21 @@ pub fn main() {
     let t = Instant::now();
 
     let mut word_string_buf = String::new();
+    println!("Reading words from disk...");
     read_words_to(WORD_FILE, &mut word_string_buf).expect("Couldn't read {WORD_FILE}");
     read_words_to(WORD_2_FILE, &mut word_string_buf).expect("Couldn't read {WORD_2_FILE}");
 
+    println!("Loading words...");
+    let mut words: Vec<Word> = word_string_buf.par_lines()
+        .map(|s| {
+            Word::new(s)
+        })
+        .filter(|s| {
+            s.int_repr.count_ones() == 5
+        })
+        .collect();
+    words.dedup_by(|a, b| a.int_repr == b.int_repr);
+    println!("Loaded {} words.", words.len());
     
     println!("Total: {:?}", t.elapsed());
 }
