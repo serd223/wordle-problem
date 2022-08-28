@@ -2,21 +2,20 @@
 use rayon::prelude::*;
 use std::time::Instant;
 
-pub fn read_words_to(path: &str, buf: &mut String) -> Result<(), String>{
+pub fn read_words_to(path: &str, buf: &mut String) -> Result<(), ()>{
     use std::path::Path;
     use std::io::Read;
     use std::fs::File;
     let p = Path::new(path);
-    let d = p.display().to_string();
 
     {
         let mut f = match File::open(p) {
             Ok(f) => f,
-            Err(why) => return Err(d + ": " + &why.to_string())
+            Err(_) => return Err(())
         };
         match f.read_to_string(buf) {
             Ok(_) => (),
-            Err(why) => return Err(d + ": " + &why.to_string())
+            Err(_) => return Err(())
         }
     }
 
