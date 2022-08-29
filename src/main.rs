@@ -32,14 +32,17 @@ const WORD_FILE: &str = "res/wordle-nyt-allowed-guesses.txt";
 const WORD_2_FILE: &str = "res/wordle-nyt-answers-alphabetical.txt";
 
 pub fn main() {
-    let t = Instant::now();
+    let t_total = Instant::now();
 
     let mut word_string_buf = String::new();
     println!("Reading words from disk...");
+    let t = Instant::now();
     read_words_to(WORD_FILE, &mut word_string_buf).expect("Couldn't read {WORD_FILE}");
     read_words_to(WORD_2_FILE, &mut word_string_buf).expect("Couldn't read {WORD_2_FILE}");
+    println!("Done: {:?}\n", t.elapsed());
 
     println!("Loading words...");
+    let t = Instant::now();
     let mut words: Vec<Word> = word_string_buf.par_lines()
         .map(|s| {
             Word::new(s)
@@ -49,7 +52,24 @@ pub fn main() {
         })
         .collect();
     words.dedup_by(|a, b| a.int_repr == b.int_repr);
-    println!("Loaded {} words.", words.len());
+    words.sort_unstable_by(|a, b| a.int_repr.cmp(&b.int_repr));
+    let words_len = words.len();
+    println!("Loaded {} words in {:?}.\n", words_len, t.elapsed());
     
-    println!("Total: {:?}", t.elapsed());
+    let next_word: Vec<Vec<usize>> = words
+        .par_iter()
+        .enumerate()
+        .map(|(i, w)| {
+            let mut res = vec![];
+            for j in (i + 1)..words_len {
+                if w.int_repr & words[j].int_repr == 0 {
+                    res.push(j);
+                }
+            }
+
+            res
+        })
+        .collect();
+
+    println!("Total: {:?}", t_total.elapsed());
 }
