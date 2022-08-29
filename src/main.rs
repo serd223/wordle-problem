@@ -1,3 +1,14 @@
+/*
+If you want to see an actually good implementation of this, check out:
+https://www.youtube.com/channel/UC9m7D4XKPJqTPCLSBym3BCg/ (Fred Overflow)
+https://github.com/fredoverflow/wordle 
+
+This was just a fun little project that I spent like an hour on.
+I would like to thank Fred Overflow again for the idea to represent words as integers.
+
+*/
+
+
 //! Use release mode
 use rayon::prelude::*;
 use std::time::Instant;
