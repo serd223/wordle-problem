@@ -1,10 +1,15 @@
 /*
+! This program is slower than Fred's version but that's because my code is worse, not beacuse Rust is slow.
+! Rust is completely capable of achieving way better speeds. My code is just bad.
+
 If you want to see an actually good implementation of this, check out:
 https://www.youtube.com/channel/UC9m7D4XKPJqTPCLSBym3BCg/ (Fred Overflow)
 https://github.com/fredoverflow/wordle 
 
-This was just a fun little project that I spent like an hour on.
+This was just a fun little project that I spent around two hours (maybe?) on.
 I would like to thank Fred Overflow again for the idea to represent words as integers.
+
+I know that this can be faster, I just don't have any motivation to try to make it faster
 
 */
 
