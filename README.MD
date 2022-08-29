@@ -1,5 +1,5 @@
 ## Installation
-- Install Go from https://www.rust-lang.org/
+- Install Rust from https://www.rust-lang.org/
 - Download the entire master branch
 
 ## Compiling and Running
