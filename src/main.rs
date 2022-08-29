@@ -32,8 +32,6 @@ const WORD_FILE: &str = "res/wordle-nyt-allowed-guesses.txt";
 const WORD_2_FILE: &str = "res/wordle-nyt-answers-alphabetical.txt";
 
 pub fn main() {
-    println!("{:?}", Word::new("xylic"));
-    println!("{:?}", Word::new("cylix"));
     let t_total = Instant::now();
 
     let mut word_string_buf = String::new();
@@ -56,7 +54,7 @@ pub fn main() {
 
     words.sort_unstable_by(|a, b| a.int_repr.cmp(&b.int_repr));
     words.dedup_by(|a, b| a.int_repr == b.int_repr);
-    
+
     let words_len = words.len();
     println!("Loaded {} words in {:?}.\n", words_len, t.elapsed());
     
