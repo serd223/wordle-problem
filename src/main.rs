@@ -64,7 +64,7 @@ pub fn main() {
         .map(|(i, w)| {
             let mut res = vec![];
             for j in (i + 1)..words_len {
-                if w.int_repr & words[j].int_repr == 0 {
+                if w & &words[j] == 0 {
                     res.push(j);
                 }
             }
@@ -72,6 +72,38 @@ pub fn main() {
             res
         })
         .collect();
+    println!("Done: {:?}\n", t.elapsed());
+
+    println!("Starting search...");
+    let t = Instant::now();
+    words.par_iter().enumerate().for_each(|(i, w)| {
+        let js = &next_word[i];
+        for &j in js {
+            let wj = &words[j];
+            let ks = &next_word[j];
+            for &k in ks {
+                let wk = &words[k];
+                if wk & w != 0 {
+                    continue;
+                }
+                let ls = &next_word[k];
+                for &l in ls {
+                    let wl = &words[l];
+                    if wl & w != 0 || wl & wj != 0 {
+                        continue;
+                    }
+                    let ms = &next_word[l];
+                    for &m in ms {
+                        let wm = &words[m];
+                        if wm & w != 0 || wm & wj != 0 || wm & wk != 0 {
+                            continue;
+                        }
+                        println!("{}, {}, {}, {}, {}", w, wj, wk, wl, wm);
+                    }
+                }
+            }
+        }
+    });
     println!("Done: {:?}\n", t.elapsed());
     
     println!("Total: {:?}", t_total.elapsed());
