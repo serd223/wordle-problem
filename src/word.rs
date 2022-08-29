@@ -10,8 +10,7 @@ impl<'a> Word<'a> {
         let sc = s.chars();
         for c in sc {
             let ascii = c as i32 - 97;
-
-            i |= 1 << (31 - ascii)
+            i |= 1 << (31 - ascii);
         }
         Self {
             str_repr: s,
