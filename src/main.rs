@@ -5,31 +5,34 @@ use std::time::Instant;
 mod word;
 use word::*;
 
-pub fn read_words_to(path: &str, buf: &mut String) -> Result<(), ()>{
+const WORD_FILE: &str = "res/wordle-nyt-allowed-guesses.txt";
+const WORD_2_FILE: &str = "res/wordle-nyt-answers-alphabetical.txt";
+
+pub fn read_words(path: &str) -> String {
     use std::path::Path;
     use std::io::Read;
     use std::fs::File;
     let p = Path::new(path);
+    let d = p.display();
+    let mut buf = String::new();
 
     {
         let mut f = match File::open(p) {
             Ok(f) => f,
-            Err(_) => return Err(())
+            Err(_) => panic!("Couldn't open {}", d)
         };
-        match f.read_to_string(buf) {
+        match f.read_to_string(&mut buf) {
             Ok(_) => (),
-            Err(_) => return Err(())
+            Err(_) => panic!("Couldn't read from {}", d)
         }
     }
 
     if let Some('\n') = buf.chars().next_back() { buf.pop(); }
     if let Some('\r') = buf.chars().next_back() { buf.pop(); }
 
-    Ok(())
+    buf
 }
 
-const WORD_FILE: &str = "res/wordle-nyt-allowed-guesses.txt";
-const WORD_2_FILE: &str = "res/wordle-nyt-answers-alphabetical.txt";
 
 pub fn main() {
     let t_total = Instant::now();
@@ -37,8 +40,9 @@ pub fn main() {
     let mut word_string_buf = String::new();
     println!("Reading words from disk...");
     let t = Instant::now();
-    read_words_to(WORD_FILE, &mut word_string_buf).expect("Couldn't read {WORD_FILE}");
-    read_words_to(WORD_2_FILE, &mut word_string_buf).expect("Couldn't read {WORD_2_FILE}");
+    word_string_buf += &read_words(WORD_FILE);
+    word_string_buf.push('\n');
+    word_string_buf += &read_words(WORD_2_FILE);
     println!("Done: {:?}\n", t.elapsed());
 
     println!("Loading words...");
