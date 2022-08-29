@@ -9,7 +9,7 @@ cd wordle_problem_but_bad
 cargo run --release
 ```
 
-# FAQ
+### FAQ
 
 + why rust?
 
