@@ -31,3 +31,17 @@ impl std::fmt::Debug for Word<'_> {
         write!(f, "{} : {:#034b}", self.str_repr, self.int_repr)
     }
 }
+
+impl std::ops::BitAnd for Word<'_> {
+    type Output = i32;
+    fn bitand(self, rhs: Self) -> Self::Output{
+        self.int_repr & rhs.int_repr
+    }
+}
+
+impl std::ops::BitAnd for &Word<'_> {
+    type Output = i32;
+    fn bitand(self, rhs: Self) -> Self::Output{
+        self.int_repr & rhs.int_repr
+    }
+}

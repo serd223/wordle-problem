@@ -73,6 +73,6 @@ pub fn main() {
         })
         .collect();
     println!("Done: {:?}\n", t.elapsed());
-
+    
     println!("Total: {:?}", t_total.elapsed());
 }
