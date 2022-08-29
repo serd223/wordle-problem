@@ -56,6 +56,8 @@ pub fn main() {
     let words_len = words.len();
     println!("Loaded {} words in {:?}.\n", words_len, t.elapsed());
     
+    println!("Creating next_word vector...");
+    let t = Instant::now();
     let next_word: Vec<Vec<usize>> = words
         .par_iter()
         .enumerate()
@@ -70,6 +72,7 @@ pub fn main() {
             res
         })
         .collect();
+    println!("Done: {:?}\n", t.elapsed());
 
     println!("Total: {:?}", t_total.elapsed());
 }

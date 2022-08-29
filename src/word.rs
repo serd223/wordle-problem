@@ -22,6 +22,12 @@ impl<'a> Word<'a> {
 
 impl std::fmt::Display for Word<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.str_repr)
+    }
+}
+
+impl std::fmt::Debug for Word<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} : {:#034b}", self.str_repr, self.int_repr)
     }
 }
