@@ -29,6 +29,11 @@ const WORD_FILE: &str = "res/wordle-nyt-allowed-guesses.txt";
 const WORD_2_FILE: &str = "res/wordle-nyt-answers-alphabetical.txt";
 
 const JQ: u32 = 1 << 27 | 1 << 26;
+/*
+Is the whole JQ thing cheating?
+Well, if we wanted to do this same search on words from other languages, it would not work.
+Is that a bad thing or is it okay? I am not sure.
+*/
 
 pub fn read_words(path: &str) -> String {
     use std::path::Path;
@@ -71,7 +76,7 @@ pub fn main() {
     let t = Instant::now();
     let mut words: Vec<Word> = word_string_buf.par_lines()
         .filter(|s| {
-            s.len() == 5
+            s.len() == 5 // This check is redundant unless we use the words_alpha file as a source
         })
         .map(|s| {
             Word::new(s)
