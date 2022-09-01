@@ -135,10 +135,10 @@ pub fn main() {
                         if wm & w != 0 || wm & wj != 0 || wm & wk != 0 {
                             continue;
                         }
-                        
+
                         let mut res_guard = res_mut.lock().unwrap();
                         res_guard.push([w.str_repr, wj.str_repr, wk.str_repr, wl.str_repr, wm.str_repr]);
-                        drop(res_guard)
+                        // drop(res_guard)
                     }
                 }
             }
@@ -150,7 +150,7 @@ pub fn main() {
     for r in res_guard.iter() {
         println!("{:?}", r);
     }
-    drop(res_guard);
+    // drop(res_guard);
     
     println!("\nTotal: {:?}", t_total.elapsed());
 }
