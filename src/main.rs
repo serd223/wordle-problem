@@ -17,6 +17,7 @@ I know that this can be faster, I just don't have any motivation to try to make 
 //! Use release mode
 use rayon::prelude::*;
 use std::time::Instant;
+use std::sync::{Arc, Mutex};
 
 mod letters;
 mod word;
@@ -108,6 +109,9 @@ pub fn main() {
     println!("Created next_word vector in {:?}.\n", t.elapsed());
 
     println!("Starting search...");
+    let results: Vec<[&str; 5]> = vec![];
+    let res_mut = Arc::new(Mutex::new(results));
+
     let t = Instant::now();    
     words[..jq_split].par_iter().enumerate().for_each(|(i, w)| {
         let js = &next_word[i];
@@ -131,7 +135,10 @@ pub fn main() {
                         if wm & w != 0 || wm & wj != 0 || wm & wk != 0 {
                             continue;
                         }
-                        println!("{}, {}, {}, {}, {}", w, wj, wk, wl, wm);
+                        
+                        let mut res_guard = res_mut.lock().unwrap();
+                        res_guard.push([w.str_repr, wj.str_repr, wk.str_repr, wl.str_repr, wm.str_repr]);
+                        drop(res_guard)
                     }
                 }
             }
@@ -139,5 +146,11 @@ pub fn main() {
     });
     println!("Searched through all words in {:?}.\n", t.elapsed());
 
-    println!("Total: {:?}", t_total.elapsed());
+    let res_guard = res_mut.lock().unwrap();
+    for r in res_guard.iter() {
+        println!("{:?}", r);
+    }
+    drop(res_guard);
+    
+    println!("\nTotal: {:?}", t_total.elapsed());
 }
