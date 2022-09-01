@@ -1,6 +1,8 @@
+use crate::letters::EARIOTNSLCUDPMHGBFYWKVXZJQ;
+
 pub struct Word<'a> {
     pub str_repr: &'a str,
-    pub int_repr: i32
+    pub int_repr: u32
 }
 
 impl<'a> Word<'a> {
@@ -9,8 +11,8 @@ impl<'a> Word<'a> {
         if !s.is_ascii() { panic!("{s} is not valid ASCII.") }
         let sc = s.chars();
         for c in sc {
-            let ascii = c as i32 - 97;
-            i |= 1 << (31 - ascii);
+            let ascii = c as u32 - 97;
+            i |= EARIOTNSLCUDPMHGBFYWKVXZJQ[ascii as usize];
         }
         Self {
             str_repr: s,
@@ -33,14 +35,14 @@ impl std::fmt::Debug for Word<'_> {
 }
 
 impl std::ops::BitAnd for Word<'_> {
-    type Output = i32;
+    type Output = u32;
     fn bitand(self, rhs: Self) -> Self::Output{
         self.int_repr & rhs.int_repr
     }
 }
 
 impl std::ops::BitAnd for &Word<'_> {
-    type Output = i32;
+    type Output = u32;
     fn bitand(self, rhs: Self) -> Self::Output{
         self.int_repr & rhs.int_repr
     }

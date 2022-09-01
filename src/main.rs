@@ -18,11 +18,14 @@ I know that this can be faster, I just don't have any motivation to try to make 
 use rayon::prelude::*;
 use std::time::Instant;
 
+mod letters;
 mod word;
 use word::*;
 
 const WORD_FILE: &str = "res/wordle-nyt-allowed-guesses.txt";
 const WORD_2_FILE: &str = "res/wordle-nyt-answers-alphabetical.txt";
+
+const JQ: u32 = 1 << 27 | 1 << 26;
 
 pub fn read_words(path: &str) -> String {
     use std::path::Path;
@@ -64,6 +67,9 @@ pub fn main() {
     println!("Loading words...");
     let t = Instant::now();
     let mut words: Vec<Word> = word_string_buf.par_lines()
+        .filter(|s| {
+            s.len() == 5
+        })
         .map(|s| {
             Word::new(s)
         })
@@ -72,9 +78,12 @@ pub fn main() {
         })
         .collect();
 
-    words.sort_unstable_by(|a, b| a.int_repr.cmp(&b.int_repr));
+    words.sort_unstable_by(|a, b| (a.int_repr ^ JQ).cmp(&(b.int_repr ^ JQ)));
     words.dedup_by(|a, b| a.int_repr == b.int_repr);
-
+    let mut jq_split = 0;
+    while (words[jq_split].int_repr & JQ) != 0 {
+		jq_split += 1; // 284
+	}
     let words_len = words.len();
     println!("Loaded {} words in {:?}.\n", words_len, t.elapsed());
     
@@ -98,7 +107,7 @@ pub fn main() {
 
     println!("Starting search...");
     let t = Instant::now();    
-    words.par_iter().enumerate().for_each(|(i, w)| {
+    words[..jq_split].par_iter().enumerate().for_each(|(i, w)| {
         let js = &next_word[i];
         for &j in js {
             let wj = &words[j];
