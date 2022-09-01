@@ -7,7 +7,9 @@ https://www.youtube.com/channel/UC9m7D4XKPJqTPCLSBym3BCg/ (Fred Overflow)
 https://github.com/fredoverflow/wordle 
 
 This was just a fun little project that I spent around two hours (maybe?) on.
-I would like to thank Fred Overflow again for the idea to represent words as integers.
+I would like to thank Fred Overflow again for the idea to represent words as integers and
+some further optimizations. Well, I actually need to thank the comments section for those
+optimizations.
 
 I know that this can be faster, I just don't have any motivation to try to make it faster
 
