@@ -80,10 +80,12 @@ pub fn main() {
 
     words.sort_unstable_by(|a, b| (a.int_repr ^ JQ).cmp(&(b.int_repr ^ JQ)));
     words.dedup_by(|a, b| a.int_repr == b.int_repr);
+    
     let mut jq_split = 0;
     while (words[jq_split].int_repr & JQ) != 0 {
-		jq_split += 1; // 284
-	}
+        jq_split += 1; // 284
+    }
+
     let words_len = words.len();
     println!("Loaded {} words in {:?}.\n", words_len, t.elapsed());
     
@@ -103,7 +105,7 @@ pub fn main() {
             res
         })
         .collect();
-    println!("Done: {:?}\n", t.elapsed());
+    println!("Created next_word vector in {:?}.\n", t.elapsed());
 
     println!("Starting search...");
     let t = Instant::now();    
@@ -135,7 +137,7 @@ pub fn main() {
             }
         }
     });
-    println!("Done: {:?}\n", t.elapsed());
+    println!("Searched through all words in {:?}.\n", t.elapsed());
 
     println!("Total: {:?}", t_total.elapsed());
 }
