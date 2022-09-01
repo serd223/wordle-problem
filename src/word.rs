@@ -11,8 +11,8 @@ impl<'a> Word<'a> {
         if !s.is_ascii() { panic!("{s} is not valid ASCII.") }
         let sc = s.chars();
         for c in sc {
-            let ascii = c as u32 - 97;
-            i |= EARIOTNSLCUDPMHGBFYWKVXZJQ[ascii as usize];
+            let ascii = c as usize - 97;
+            i |= EARIOTNSLCUDPMHGBFYWKVXZJQ[ascii];
         }
         Self {
             str_repr: s,
