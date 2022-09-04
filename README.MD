@@ -1,11 +1,9 @@
-## Installation
-- Install Rust from https://www.rust-lang.org/
-- Download the entire master branch
-
 ## Compiling and Running
 
+- Install Rust from https://www.rust-lang.org/
 ```
-cd wordle_problem_but_bad
+git clone https://github.com/serd223/word-search
+cd word-search
 cargo run --release
 ```
 
