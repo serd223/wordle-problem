@@ -1,25 +1,7 @@
-/*
-! This program is slower than Fred's version but that's because my code is worse, not beacuse Rust is slow.
-! Rust is completely capable of achieving way better speeds. My code is just bad.
-
-If you want to see an actually good implementation of this, check out:
-https://www.youtube.com/channel/UC9m7D4XKPJqTPCLSBym3BCg/ (Fred Overflow)
-https://github.com/fredoverflow/wordle 
-
-This was just a fun little project that I spent around two hours (maybe?) on.
-I would like to thank Fred Overflow again for the idea to represent words as integers and
-some further optimizations. Well, I actually need to thank the comments section for those
-optimizations.
-
-I know that this can be faster, I just don't have any motivation to try to make it faster
-
-*/
-
-
 //! Use release mode
 use rayon::prelude::*;
-use std::time::Instant;
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 
 mod letters;
 mod word;
@@ -36,9 +18,9 @@ Is that a bad thing or is it okay? I am not sure.
 */
 
 pub fn read_words(path: &str) -> String {
-    use std::path::Path;
-    use std::io::Read;
     use std::fs::File;
+    use std::io::Read;
+    use std::path::Path;
     let p = Path::new(path);
     let d = p.display();
     let mut buf = String::new();
@@ -46,20 +28,23 @@ pub fn read_words(path: &str) -> String {
     {
         let mut f = match File::open(p) {
             Ok(f) => f,
-            Err(_) => panic!("Couldn't open {}", d)
+            Err(_) => panic!("Couldn't open {}", d),
         };
         match f.read_to_string(&mut buf) {
             Ok(_) => (),
-            Err(_) => panic!("Couldn't read from {}", d)
+            Err(_) => panic!("Couldn't read from {}", d),
         }
     }
 
-    if let Some('\n') = buf.chars().next_back() { buf.pop(); }
-    if let Some('\r') = buf.chars().next_back() { buf.pop(); }
+    if let Some('\n') = buf.chars().next_back() {
+        buf.pop();
+    }
+    if let Some('\r') = buf.chars().next_back() {
+        buf.pop();
+    }
 
     buf
 }
-
 
 pub fn main() {
     let t_total = Instant::now();
@@ -74,21 +59,18 @@ pub fn main() {
 
     println!("Loading words...");
     let t = Instant::now();
-    let mut words: Vec<Word> = word_string_buf.par_lines()
+    let mut words: Vec<Word> = word_string_buf
+        .par_lines()
         .filter(|s| {
             s.len() == 5 // This check is redundant unless we use the words_alpha file as a source
         })
-        .map(|s| {
-            Word::new(s)
-        })
-        .filter(|s| {
-            s.int_repr.count_ones() == 5
-        })
+        .map(Word::new)
+        .filter(|s| s.int_repr.count_ones() == 5)
         .collect();
 
     words.sort_unstable_by(|a, b| (a.int_repr ^ JQ).cmp(&(b.int_repr ^ JQ)));
     words.dedup_by(|a, b| a.int_repr == b.int_repr);
-    
+
     let mut jq_split = 0;
     while (words[jq_split].int_repr & JQ) != 0 {
         jq_split += 1; // 284
@@ -96,7 +78,7 @@ pub fn main() {
 
     let words_len = words.len();
     println!("Loaded {} words in {:?}.\n", words_len, t.elapsed());
-    
+
     println!("Creating next_word vector...");
     let t = Instant::now();
     let next_word: Vec<Vec<usize>> = words
@@ -119,7 +101,7 @@ pub fn main() {
     let results: Vec<[&str; 5]> = vec![];
     let res_mut = Arc::new(Mutex::new(results));
 
-    let t = Instant::now();    
+    let t = Instant::now();
     words[..jq_split].par_iter().enumerate().for_each(|(i, w)| {
         let js = &next_word[i];
         for &j in js {
@@ -144,7 +126,13 @@ pub fn main() {
                         }
 
                         let mut res_guard = res_mut.lock().unwrap();
-                        res_guard.push([w.str_repr, wj.str_repr, wk.str_repr, wl.str_repr, wm.str_repr]);
+                        res_guard.push([
+                            w.str_repr,
+                            wj.str_repr,
+                            wk.str_repr,
+                            wl.str_repr,
+                            wm.str_repr,
+                        ]);
                         // drop(res_guard)
                     }
                 }
@@ -158,6 +146,6 @@ pub fn main() {
         println!("{:?}", r);
     }
     // drop(res_guard);
-    
+
     println!("\nTotal: {:?}", t_total.elapsed());
 }
