@@ -103,6 +103,7 @@ pub fn main() {
 
     let t = Instant::now();
     words[..jq_split].par_iter().enumerate().for_each(|(i, w)| {
+        let mut res_buf = vec![];
         let js = &next_word[i];
         for &j in js {
             let wj = &words[j];
@@ -125,19 +126,20 @@ pub fn main() {
                             continue;
                         }
 
-                        let mut res_guard = res_mut.lock().unwrap();
-                        res_guard.push([
+                        res_buf.push([
                             w.str_repr,
                             wj.str_repr,
                             wk.str_repr,
                             wl.str_repr,
                             wm.str_repr,
                         ]);
-                        // drop(res_guard)
                     }
                 }
             }
         }
+
+        let mut res_guard = res_mut.lock().unwrap();
+        res_guard.append(&mut res_buf);
     });
     println!("Searched through all words in {:?}.\n", t.elapsed());
 
