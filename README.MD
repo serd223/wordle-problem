@@ -1,13 +1,16 @@
-## Compiling and Running
+# Build Instructions
 
+## Prerequisites
 - Install Rust from https://www.rust-lang.org/
-```
-git clone https://github.com/serd223/wordle-problem-but-bad
-cd wordle-problem-but-bad
+
+## Instructions
+```console
+git clone https://github.com/serd223/wordle-problem
+cd wordle-problem
 cargo run --release
 ```
 
-### FAQ
+# FAQ
 
 + why rust?
 
